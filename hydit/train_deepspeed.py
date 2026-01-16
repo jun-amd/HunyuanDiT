@@ -213,7 +213,8 @@ def main(args):
 
     assert torch.cuda.is_available(), "Training currently requires at least one GPU."
 
-    dist.init_process_group("nccl")
+    #dist.init_process_group("nccl")
+    deepspeed.init_distributed()
     world_size = dist.get_world_size()
     batch_size = args.batch_size
     grad_accu_steps = args.grad_accu_steps
