@@ -1,0 +1,1 @@
+podman run -it --device=/dev/dri --device=/dev/kfd  --name hunyuandit --network=host --ipc=host --group-add keep-groups -v $HOME:/workdir --workdir /workdir docker://rocm/pytorch-training:v25.9_gfx942 bash

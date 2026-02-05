@@ -3,9 +3,9 @@ resume_module_root=./ckpts/t2i/model/pytorch_model_distill.pt # checkpoint root 
 resume_ema_root=./ckpts/t2i/model/pytorch_model_ema.pt      # checkpoint root for ema resume
 index_file=dataset/porcelain/jsons/porcelain.json             # index file for dataloader
 results_dir=./log_EXP                                         # save root for results
-batch_size=1                                                  # training batch size
+batch_size=2                                                  # training batch size
 image_size=1024                                               # training image resolution
-grad_accu_steps=1                                             # gradient accumulation
+grad_accu_steps=2                                             # gradient accumulation
 warmup_num_steps=0                                            # warm-up steps
 lr=0.0001                                                     # learning rate
 ckpt_every=9999999                                            # create a ckpt every a few steps.
@@ -42,6 +42,4 @@ sh $(dirname "$0")/run_g.sh \
     --log-every 10 \
     --deepspeed \
     --use-zero-stage 2 \
-    --gradient-checkpointing \
-    --cpu-offloading \
     "$@"
