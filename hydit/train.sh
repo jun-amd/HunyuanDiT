@@ -39,7 +39,7 @@ sh $(dirname "$0")/run_g.sh \
     --ckpt-every ${ckpt_every} \
     --ckpt-latest-every ${ckpt_latest_every} \
     --ckpt-every-n-epoch ${ckpt_every_n_epoch} \
-    --log-every 10 \
+    --log-every 1 \
     --deepspeed \
     --use-zero-stage 2 \
     "$@"

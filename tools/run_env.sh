@@ -1,6 +1,4 @@
 sudo apt-get install -y vim
-git clone https://github.com/jun-amd/HunyuanDiT.git
-cd HunyuanDiT/
 python -m pip install "huggingface_hub[cli]"
 huggingface-cli download Tencent-Hunyuan/HunyuanDiT-v1.2 --local-dir ./ckpts
 pip install -e ./IndexKits
