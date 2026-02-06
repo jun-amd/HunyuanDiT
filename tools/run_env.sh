@@ -10,7 +10,7 @@ python ./hydit/data_loader/csv2arrow.py ./dataset/porcelain/csvfile/image_text.c
 huggingface-cli download Tencent-Hunyuan/Distillation-v1.2 --local-dir ./ckpts
 mv ckpts/pytorch_model_distill.pt ./ckpts/t2i/model/
 
-pip install deepspeed
+pip install deepspeed==0.18.3
 pip install timm
 pip install bitsandbytes
 
