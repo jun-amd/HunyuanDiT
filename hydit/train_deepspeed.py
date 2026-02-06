@@ -553,6 +553,24 @@ def main(args):
     running_loss = 0
     start_time = time.time()
 
+    profile_step_start = 4
+    profile_step_end = 6
+    profile_ranks = [0]
+    tensorboard_dir = './profiler_logs_actor'
+
+    prof = None
+    if torch.distributed.get_rank() in profile_ranks:
+        prof = torch.profiler.profile(
+        schedule=torch.profiler.schedule(
+            wait=max(profile_step_start-1, 0),
+            warmup=1 if profile_step_start > 0 else 0,
+            active=profile_step_end-profile_step_start,
+            repeat=1),
+        on_trace_ready=torch.profiler.tensorboard_trace_handler(tensorboard_dir),
+        record_shapes=True,
+        with_stack=True)
+        prof.start()
+
     # Training loop
     epoch = start_epoch
     while epoch < args.epochs:
@@ -573,7 +591,10 @@ def main(args):
                 logger.info(f"      Iters left this epoch: {len(loader):,}")
 
         logger.info(f"    Beginning epoch {epoch}...")
-        for batch in loader:
+        for i, batch in enumerate(loader):
+            if torch.distributed.get_rank() in profile_ranks:
+                prof.step()
+
             latents, model_kwargs = prepare_model_inputs(
                 args, batch, device, vae, text_encoder, text_encoder_t5, freqs_cis_img
             )
@@ -602,6 +623,11 @@ def main(args):
                     ema.update(target_module, step=train_steps)
                 else:
                     ema.update(model.module, step=train_steps)
+
+            if i == profile_step_end and torch.distributed.get_rank() in profile_ranks:
+                assert prof is not None
+                prof.stop()
+                print(prof.key_averages(group_by_stack_n=5).table(sort_by="self_cuda_time_total", row_limit=200))
 
             # ===========================================================================
             # Log loss values:
